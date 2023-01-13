@@ -1,12 +1,15 @@
 import puppeteer from 'puppeteer';
+import { getToken } from './db';
 
-export default async function getGrades(ctx: { reply: (text: string) => void }, link: string): Promise<void> {
+export default async function getGrades(ctx: { reply: (text: string) => void; from: { id: number } }, link: string): Promise<void> {
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
         const page = await browser.newPage();
         await page.goto('https://ecampus.kpi.ua/');
-        if (process.env.TOKEN)
-            await page.setCookie(...[{ name: "token", value: process.env.TOKEN }]);
+        if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
+        const token = await getToken(ctx.from.id.toString());
+        if (token)
+            await page.setCookie(...[{ name: "token", value: token }]);
         await page.goto('https://ecampus.kpi.ua/home');
         const allResultsSelector = '.btn-primary';
         await page.waitForSelector(allResultsSelector);

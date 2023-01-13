@@ -4,7 +4,7 @@ declare global {
       TELEGRAM_TOKEN: string;
       NODE_ENV?: "development" | "production";
       PORT?: number;
-      TOKEN: string;
+      CONNECTION_STRING: string;
     }
   }
 }
