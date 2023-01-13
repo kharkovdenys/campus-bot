@@ -1,6 +1,7 @@
+import { CommandContext, Context } from 'grammy';
 import puppeteer from 'puppeteer';
 
-export default async function getSession(ctx: any) {
+export default async function getSession(ctx: CommandContext<Context>): Promise<void> {
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
         const page = await browser.newPage();
@@ -13,9 +14,9 @@ export default async function getSession(ctx: any) {
         await page.click(allResultsSelector);
         await page.waitForSelector('.cntnt');
         await page.goto("https://campus.kpi.ua/student/index.php?mode=vedomoststud");
-        let element = await page.$('.cntnt table');
-        let value = await page.evaluate(el => el?.innerText, element);
-        ctx.reply(value);
+        const element = await page.$('.cntnt table');
+        const value = await page.evaluate(el => el?.innerText, element);
+        ctx.reply(value || '');
     } finally {
         await browser.close();
     }

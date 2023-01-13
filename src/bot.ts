@@ -12,7 +12,7 @@ bot.command("session", getSession);
 
 bot.command("subjects", GetSubjects);
 
-bot.callbackQuery(/student(.*)/, (ctx) => getGrades(ctx, ctx.callbackQuery.data))
+bot.callbackQuery(/student(.*)/, (ctx) => getGrades(ctx, ctx.callbackQuery.data));
 
 if (process.env.NODE_ENV === "production") {
   const app = express();
