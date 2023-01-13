@@ -15,7 +15,6 @@ export default async function getSession(ctx: any) {
         await page.goto("https://campus.kpi.ua/student/index.php?mode=vedomoststud");
         let element = await page.$('.cntnt table');
         let value = await page.evaluate(el => el?.innerText, element);
-        console.log(value);
         ctx.reply(value);
     } finally {
         await browser.close();
