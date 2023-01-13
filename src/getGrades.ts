@@ -10,6 +10,7 @@ export default async function getGrades(ctx: { reply: (text: string) => void; fr
         const token = await getToken(ctx.from.id.toString());
         if (token)
             await page.setCookie(...[{ name: "token", value: token }]);
+        else { ctx.reply("Сталася якась помилка"); return; }
         await page.goto('https://ecampus.kpi.ua/home');
         const allResultsSelector = '.btn-primary';
         await page.waitForSelector(allResultsSelector);

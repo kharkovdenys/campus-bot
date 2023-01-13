@@ -9,13 +9,17 @@ export default async function startdb(): Promise<void> {
 }
 
 export async function getToken(userId: string): Promise<string | undefined> {
-    const result = await sql.query`select * from token where userId = ${userId}`;
-    return result.recordset[0].token;
+    try {
+        const result = await sql.query`select * from token where userId = ${userId}`;
+        return result.recordset[0].token;
+    } catch {
+        return undefined;
+    }
 }
 
 export async function addToken(userId: string, token: string): Promise<boolean> {
     try {
-        await sql.query`INSERT INTO Token Values(${userId},${token})`;
+        await sql.query`INSERT INTO Token Values(${userId},${token},0)`;
         return true;
     } catch {
         return false;

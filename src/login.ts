@@ -25,6 +25,6 @@ export default async function login(ctx: CommandContext<Context>): Promise<void>
     });
     const token = data.headers.get('set-cookie')?.match(/token=([^;]*);/)?.[1];
     if (!token) { ctx.reply("Сталася якась помилка"); return; }
-    addToken(ctx.from.id.toString(), token);
+    if (!await addToken(ctx.from.id.toString(), token)) { ctx.reply("Сталася якась помилка"); return; }
     ctx.reply("Автентифікація пройшла успішно");
 }
