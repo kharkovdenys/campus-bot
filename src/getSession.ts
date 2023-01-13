@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 export default async function getSession(ctx: any) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
         const page = await browser.newPage();
         await page.goto('https://ecampus.kpi.ua/');
