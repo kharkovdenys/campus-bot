@@ -1,17 +1,23 @@
-import { Builder, Browser, By, until } from 'selenium-webdriver';
+import puppeteer from 'puppeteer';
 
 export default async function getSession(ctx: any) {
-    let driver = await new Builder().forBrowser(Browser.CHROME).build();
+    const browser = await puppeteer.launch({ headless: true });
     try {
-        await driver.get('https://ecampus.kpi.ua/');
+        const page = await browser.newPage();
+        await page.goto('https://ecampus.kpi.ua/');
         if (process.env.TOKEN)
-            await driver.manage().addCookie({ name: "token", value: process.env.TOKEN })
-        await driver.navigate().to('https://ecampus.kpi.ua/home');
-        await driver.findElement(By.css(".btn-primary")).click();
-        await driver.wait(until.urlContains('/campus'), 500);
-        await driver.navigate().to("https://campus.kpi.ua/student/index.php?mode=vedomoststud");
-        ctx.reply(await driver.findElement(By.css("table")).getText());
+            await page.setCookie(...[{ name: "token", value: process.env.TOKEN }]);
+        await page.goto('https://ecampus.kpi.ua/home');
+        const allResultsSelector = '.btn-primary';
+        await page.waitForSelector(allResultsSelector);
+        await page.click(allResultsSelector);
+        await page.waitForSelector('.cntnt');
+        await page.goto("https://campus.kpi.ua/student/index.php?mode=vedomoststud");
+        let element = await page.$('.cntnt table');
+        let value = await page.evaluate(el => el?.innerText, element);
+        console.log(value);
+        ctx.reply(value);
     } finally {
-        await driver.quit();
+        await browser.close();
     }
 }
