@@ -29,8 +29,9 @@ export default async function login(ctx: CommandContext<Context>): Promise<void>
             body: formBody.join("&")
         });
         const token = data.headers.get('set-cookie')?.match(/token=([^;]*);/)?.[1];
-        if (!token) { ctx.reply("Сталася якась помилка"); return; }
-        if (!await addToken(ctx.from.id.toString(), token)) { ctx.reply("Сталася якась помилка"); return; }
+        if (!token) { ctx.reply("Токен повернувся пустим"); return; }
+        const added = await addToken(ctx.from.id.toString(), token);
+        if (!added) { ctx.reply("Сталась помилка при додаванні"); return; }
         ctx.reply("Автентифікація пройшла успішно");
     } catch (e) {
         ctx.reply("Сталася якась помилка");
