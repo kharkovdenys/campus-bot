@@ -76,7 +76,7 @@ bot.catch((err) => {
 if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(express.json());
-  app.use(webhookCallback(bot, "express"));
+  app.use(webhookCallback(bot, "express", { onTimeout: () => console.log("timeout"), timeoutMilliseconds: 45000 }));
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, async () => {
     await startdb();
