@@ -1,4 +1,4 @@
-import { Bot, webhookCallback } from "grammy";
+import { Bot, GrammyError, HttpError, webhookCallback } from "grammy";
 import express from "express";
 import schedule from "node-schedule";
 import getSession from "./getSession";
@@ -49,7 +49,7 @@ bot.command("unsubscribe", async (ctx) => {
 
 bot.callbackQuery(/student(.*)/, (ctx) => getGrades(ctx, ctx.callbackQuery.data));
 
-schedule.scheduleJob('1 * * *', async function () {
+schedule.scheduleJob('59 * * * *', async function () {
   console.log('check');
   const users = await getDistribution();
   if (!users) { console.log("Сталася якась помилка"); return; }
@@ -57,6 +57,19 @@ schedule.scheduleJob('1 * * *', async function () {
     const hashes = await getHash(users[i].userId);
     if (hashes)
       await checkHesh(users[i], hashes, bot.api);
+  }
+});
+
+bot.catch((err) => {
+  const ctx = err.ctx;
+  console.error(`Error while handling update ${ctx.update.update_id}:`);
+  const e = err.error;
+  if (e instanceof GrammyError) {
+    console.error("Error in request:", e.description);
+  } else if (e instanceof HttpError) {
+    console.error("Could not contact Telegram:", e);
+  } else {
+    console.error("Unknown error:", e);
   }
 });
 
