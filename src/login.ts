@@ -4,7 +4,11 @@ import { addToken, deleteToken } from "./db";
 export default async function login(ctx: CommandContext<Context>): Promise<void> {
     try {
         const arg = ctx.match.trim().split(' ');
-        await ctx.deleteMessage();
+        try {
+            await ctx.deleteMessage();
+        } catch {
+            console.log("Помилка видалення повідомлення");
+        }
         if (!ctx.from || arg.length !== 2) { ctx.reply("Сталася якась помилка"); return; }
         await deleteToken(ctx.from.id.toString());
         const details: { [key: string]: string } = {
