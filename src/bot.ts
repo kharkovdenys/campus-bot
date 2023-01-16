@@ -1,12 +1,8 @@
-import { Bot, GrammyError, HttpError, webhookCallback } from "grammy";
+import { Bot, webhookCallback } from "grammy";
 import express from "express";
 import schedule from "node-schedule";
-import getSession from "./getSession";
-import GetSubjects from "./getSubjects";
-import getGrades from "./getGrades";
-import startdb, { deleteAllHash, deleteToken, getDistribution, getHash, getToken, updateDistribution } from "./db";
-import login from "./login";
-import checkHesh from "./checkHesh";
+import startdb, { getDistribution, getHash } from "./services/db";
+import { checkHesh, getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
 
 const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
@@ -18,58 +14,26 @@ bot.command("subjects", GetSubjects);
 
 bot.command("login", login);
 
-bot.command("logout", async (ctx) => {
-  if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-  if (await deleteToken(ctx.from.id.toString()))
-    ctx.reply("Вихід відбувся успішно");
-  else
-    ctx.reply("Сталася якась помилка");
-});
+bot.command("logout", logout);
 
-bot.command("subscribe", async (ctx) => {
-  if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-  if (await updateDistribution(ctx.from.id.toString(), true)) {
-    await deleteAllHash(ctx.from.id.toString());
-    const token = await getToken(ctx.from.id.toString());
-    if (!token) { ctx.reply("Ви не пройшли автентифікацію"); return; }
-    await checkHesh({ userId: ctx.from.id.toString(), token }, []);
-    ctx.reply("Ви успішно підписалися");
-  }
-  else
-    ctx.reply("Сталася якась помилка");
-});
+bot.command("subscribe", subscribe);
 
-bot.command("unsubscribe", async (ctx) => {
-  if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-  if (await updateDistribution(ctx.from.id.toString(), false))
-    ctx.reply("Ви успішно відписалися");
-  else
-    ctx.reply("Сталася якась помилка");
-});
+bot.command("unsubscribe", unsubscribe);
 
-bot.callbackQuery(/student(.*)/, (ctx) => getGrades(ctx, ctx.callbackQuery.data));
+bot.callbackQuery(/student(.*)/, getGrades);
 
 schedule.scheduleJob('59 * * * *', async function () {
   console.log('check');
-  const users = await getDistribution();
-  if (!users) { console.log("Сталася якась помилка"); return; }
-  for (let i = 0; i < users.length; i++) {
-    const hashes = await getHash(users[i].userId);
-    if (hashes)
-      await checkHesh(users[i], hashes, bot.api);
-  }
-});
-
-bot.catch((err) => {
-  const ctx = err.ctx;
-  console.error(`Error while handling update ${ctx.update.update_id}:`);
-  const e = err.error;
-  if (e instanceof GrammyError) {
-    console.error("Error in request:", e.description);
-  } else if (e instanceof HttpError) {
-    console.error("Could not contact Telegram:", e);
-  } else {
-    console.error("Unknown error:", e);
+  try {
+    const users = await getDistribution();
+    if (!users) { console.log("Сталася якась помилка"); return; }
+    for (let i = 0; i < users.length; i++) {
+      const hashes = await getHash(users[i].userId);
+      if (hashes)
+        await checkHesh(users[i], hashes, bot.api);
+    }
+  } catch {
+    console.log('error');
   }
 });
 

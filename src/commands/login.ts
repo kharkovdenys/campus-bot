@@ -1,8 +1,8 @@
 import { CommandContext, Context } from "grammy";
-import { addToken, deleteToken } from "./db";
+import { addToken, deleteToken } from "../services/db";
 import axios from 'axios';
 
-export default async function login(ctx: CommandContext<Context>): Promise<void> {
+export async function login(ctx: CommandContext<Context>): Promise<void> {
     try {
         const arg = ctx.match.trim().split(' ');
         try {
@@ -34,8 +34,7 @@ export default async function login(ctx: CommandContext<Context>): Promise<void>
         const added = await addToken(ctx.from.id.toString(), token);
         if (!added) { ctx.reply("Сталась помилка при додаванні"); return; }
         ctx.reply("Автентифікація пройшла успішно");
-    } catch (e) {
+    } catch {
         ctx.reply("Сталася якась помилка");
-        console.log(e);
     }
 }

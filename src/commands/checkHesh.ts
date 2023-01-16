@@ -1,27 +1,20 @@
 import { Api, RawApi } from "grammy";
 import puppeteer from "puppeteer";
-import { insertHash, updateHash } from "./db";
-import hash from "./hash";
+import { Hash, User } from "../interfaces";
+import { insertHash, updateHash } from "../services/db";
+import { authorization } from "../utils/authorization";
+import sha256 from "../utils/sha256";
 
-export default async function checkHesh(user: { userId: string; token: string }, hashes: { subjectId: string, hash256: string }[], bot?: Api<RawApi>): Promise<void> {
+export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): Promise<void> {
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
-        const update = [];
-        const insert = [];
+        const update: Hash[] = [], insert: Hash[] = [];
         const page = await browser.newPage();
-        await page.goto('https://ecampus.kpi.ua/');
-        if (user.token)
-            await page.setCookie(...[{ name: "token", value: user.token }]);
-        else { console.log("Сталася якась помилка"); return; }
-        await page.goto('https://ecampus.kpi.ua/home');
-        const allResultsSelector = '.btn-primary';
-        await page.waitForSelector(allResultsSelector);
-        await page.click(allResultsSelector);
-        await page.waitForSelector('.cntnt');
+        await authorization(user.userId, page);
         await page.goto("https://campus.kpi.ua/student/index.php?mode=vedomoststud");
         const element = await page.$('.cntnt table');
         const value = await page.evaluate(el => el?.innerText, element);
-        const hash256 = hash(value || '');
+        const hash256 = sha256(value || '');
         const current = hashes.filter((h) => h.subjectId === '-1');
         if (current.length) {
             if (current[0].hash256 !== hash256) {
@@ -53,7 +46,7 @@ export default async function checkHesh(user: { userId: string; token: string },
             }
             const element = await page.$('#tabs-0 p');
             answer += await page.evaluate(el => el?.innerText, element);
-            const hash256 = hash(answer);
+            const hash256 = sha256(answer);
             const subjectId = link?.match(/id=([0-9]*)/)?.[1];
             if (subjectId) {
                 const current = hashes.filter((h) => h.subjectId === subjectId);
@@ -69,12 +62,8 @@ export default async function checkHesh(user: { userId: string; token: string },
             }
 
         }
-        if (update.length) {
-            await updateHash(user.userId, update);
-        }
-        if (insert.length) {
-            await insertHash(user.userId, insert);
-        }
+        if (update.length) await updateHash(user.userId, update);
+        if (insert.length) await insertHash(user.userId, insert);
     }
     finally {
         await browser.close();

@@ -1,4 +1,5 @@
 import sql from 'mssql';
+import { Hash, User } from '../interfaces';
 
 export default async function startdb(): Promise<void> {
     try {
@@ -44,7 +45,7 @@ export async function updateDistribution(userId: string, destribution: boolean):
     }
 }
 
-export async function getDistribution(): Promise<{ userId: string; token: string }[] | undefined> {
+export async function getDistribution(): Promise<User[] | undefined> {
     try {
         const result = await sql.query`SELECT userId, token FROM Token WHERE distribution = 1`;
         return result.recordset;
@@ -53,7 +54,7 @@ export async function getDistribution(): Promise<{ userId: string; token: string
     }
 }
 
-export async function getHash(userId: string): Promise<{ subjectId: string, hash256: string }[] | undefined> {
+export async function getHash(userId: string): Promise<Hash[] | undefined> {
     try {
         const result = await sql.query`SELECT subjectId, hash256 FROM Hash WHERE userId=${userId}`;
         return result.recordset;
@@ -71,7 +72,7 @@ export async function deleteAllHash(userId: string): Promise<boolean> {
     }
 }
 
-export async function insertHash(userId: string, hashes: { subjectId: string, hash256: string }[]): Promise<boolean> {
+export async function insertHash(userId: string, hashes: Hash[]): Promise<boolean> {
     try {
         let command = '';
         hashes.map((hash) => command += `(${userId},'${hash.subjectId}','${hash.hash256}'),\n`);
@@ -83,7 +84,7 @@ export async function insertHash(userId: string, hashes: { subjectId: string, ha
     }
 }
 
-export async function updateHash(userId: string, hashes: { subjectId: string, hash256: string }[]): Promise<boolean> {
+export async function updateHash(userId: string, hashes: Hash[]): Promise<boolean> {
     try {
         let command = `DELETE FROM Hash WHERE userId='${userId}' AND subjectId IN (${hashes.map((hash) => `'${hash.subjectId}'`).join(",")})`;
         await sql.query(command);

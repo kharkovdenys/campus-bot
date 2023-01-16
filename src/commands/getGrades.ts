@@ -1,22 +1,14 @@
 import puppeteer from 'puppeteer';
-import { getToken } from './db';
+import { ContextQuery } from '../interfaces';
+import { authorization } from '../utils/authorization';
 
-export default async function getGrades(ctx: { reply: (text: string) => void; from: { id: number } }, link: string): Promise<void> {
+export async function getGrades(ctx: ContextQuery): Promise<void> {
     const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
         const page = await browser.newPage();
-        await page.goto('https://ecampus.kpi.ua/');
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-        const token = await getToken(ctx.from.id.toString());
-        if (token)
-            await page.setCookie(...[{ name: "token", value: token }]);
-        else { ctx.reply("Сталася якась помилка"); return; }
-        await page.goto('https://ecampus.kpi.ua/home');
-        const allResultsSelector = '.btn-primary';
-        await page.waitForSelector(allResultsSelector);
-        await page.click(allResultsSelector);
-        await page.waitForSelector('.cntnt');
-        await page.goto("https://campus.kpi.ua" + link);
+        await authorization(ctx.from.id.toString(), page);
+        await page.goto("https://campus.kpi.ua" + ctx.callbackQuery.data);
         const grades = await page.evaluate(() => {
             const tds = [...document.querySelectorAll(`#tabs-0 table td`)];
             return tds.map((td) => td.textContent);
