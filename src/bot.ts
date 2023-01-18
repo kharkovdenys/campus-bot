@@ -23,7 +23,7 @@ bot.command("unsubscribe", unsubscribe);
 bot.callbackQuery(/student(.*)/, getGrades);
 
 schedule.scheduleJob('59 * * * *', async function () {
-  console.log('check');
+  if (process.env.SKIP) return;
   try {
     const users = await getDistribution();
     if (!users) { console.log("Сталася якась помилка"); return; }
@@ -33,7 +33,7 @@ schedule.scheduleJob('59 * * * *', async function () {
         await checkHesh(users[i], hashes, bot.api);
     }
   } catch {
-    console.log('error');
+    console.log('validation error');
   }
 });
 
