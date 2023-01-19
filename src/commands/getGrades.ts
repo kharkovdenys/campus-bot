@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer';
+import { minimal_args } from '../config/puppeteer';
 import { ContextQuery } from '../interfaces';
 import { authorization } from '../utils/authorization';
 
 export async function getGrades(ctx: ContextQuery): Promise<void> {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
     try {
         const page = await browser.newPage();
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }

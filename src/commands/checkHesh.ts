@@ -1,12 +1,13 @@
 import { Api, RawApi } from "grammy";
 import puppeteer from "puppeteer";
+import { minimal_args } from "../config/puppeteer";
 import { Hash, User } from "../interfaces";
 import { insertHash, updateHash } from "../services/db";
 import { authorization } from "../utils/authorization";
 import sha256 from "../utils/sha256";
 
 export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): Promise<void> {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
     try {
         const update: Hash[] = [], insert: Hash[] = [];
         const page = await browser.newPage();

@@ -1,9 +1,10 @@
 import { CommandContext, Context } from 'grammy';
 import puppeteer from 'puppeteer';
+import { minimal_args } from '../config/puppeteer';
 import { authorization } from '../utils/authorization';
 
 export async function getSession(ctx: CommandContext<Context>): Promise<void> {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
     try {
         const page = await browser.newPage();
         await page.goto('https://ecampus.kpi.ua/');
