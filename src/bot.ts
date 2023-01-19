@@ -23,7 +23,7 @@ bot.command("unsubscribe", unsubscribe);
 bot.callbackQuery(/student(.*)/, getGrades);
 
 schedule.scheduleJob('59 * * * *', async function () {
-  if (process.env.SKIP) return;
+  if (process.env.SKIP === "true") return;
   try {
     const users = await getDistribution();
     if (!users) { console.log("Сталася якась помилка"); return; }

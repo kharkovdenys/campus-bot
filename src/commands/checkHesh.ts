@@ -26,20 +26,12 @@ export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): 
             await bot?.sendMessage(user.userId, value || '');
         }
         await page.goto("https://campus.kpi.ua/student/index.php?mode=studysheet");
-        const links = await page.evaluate(() => {
-            const as = [...document.querySelectorAll(`.ListBox tr[data-year="2022-2023"][data-sem="1"] td a`)];
-            return as.map((a) => a.getAttribute('href'));
-        });
+        const selector = `.ListBox tr[data-year="${process.env.DATAYEAR}"][data-sem="${process.env.DATASEM}"] td a`;
+        const links = await page.$$eval(selector, e => e.map(a => a.getAttribute('href')));
         for (const link of links) {
             await page.goto("https://campus.kpi.ua" + link);
-            const grades = await page.evaluate(() => {
-                const tds = [...document.querySelectorAll(`#tabs-0 table td`)];
-                return tds.map((td) => td.textContent);
-            });
-            const name = await page.evaluate(() => {
-                const tds = [...document.querySelectorAll(`.head td`)];
-                return tds.map((td) => td.textContent)[3];
-            });
+            const grades = await page.$$eval(`#tabs-0 table td`, e => e.map(td => td.textContent));
+            const name = await page.$$eval(`.head td`, e => e.map(td => td.textContent)[3]);
             let answer = name?.substring(0, name.indexOf(',')) + ":\n";
             for (let i = 0; i < grades.length / 5; i++) {
                 answer += grades[i * 5] + ' ' + (grades[i * 5 + 1] || '❌') + ' ' + grades[i * 5 + 2] + '\n';

@@ -9,14 +9,8 @@ export async function getGrades(ctx: ContextQuery): Promise<void> {
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
         await authorization(ctx.from.id.toString(), page);
         await page.goto("https://campus.kpi.ua" + ctx.callbackQuery.data);
-        const grades = await page.evaluate(() => {
-            const tds = [...document.querySelectorAll(`#tabs-0 table td`)];
-            return tds.map((td) => td.textContent);
-        });
-        const name = await page.evaluate(() => {
-            const tds = [...document.querySelectorAll(`.head td`)];
-            return tds.map((td) => td.textContent)[3];
-        });
+        const grades = await page.$$eval(`#tabs-0 table td`, e => e.map(td => td.textContent));
+        const name = await page.$$eval(`.head td`, e => e.map(td => td.textContent)[3]);
         let answer = name?.substring(0, name.indexOf(',')) + ":\n";
         for (let i = 0; i < grades.length / 5; i++) {
             answer += grades[i * 5] + ' ' + (grades[i * 5 + 1] || '❌') + ' ' + grades[i * 5 + 2] + '\n';

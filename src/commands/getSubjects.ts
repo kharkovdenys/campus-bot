@@ -10,14 +10,9 @@ export async function GetSubjects(ctx: CommandContext<Context>): Promise<void> {
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
         await authorization(ctx.from.id.toString(), page);
         await page.goto("https://campus.kpi.ua/student/index.php?mode=studysheet");
-        const subjects = await page.evaluate(() => {
-            const tds = [...document.querySelectorAll(`.ListBox tr[data-year="2022-2023"][data-sem="1"] td`)];
-            return tds.map((td) => td.textContent);
-        });
-        const links = await page.evaluate(() => {
-            const as = [...document.querySelectorAll(`.ListBox tr[data-year="2022-2023"][data-sem="1"] td a`)];
-            return as.map((a) => a.getAttribute('href'));
-        });
+        const selector = `.ListBox tr[data-year="${process.env.DATAYEAR}"][data-sem="${process.env.DATASEM}"] td`;
+        const subjects = await page.$$eval(selector, e => e.map(subject => subject.textContent));
+        const links = await page.$$eval(selector + " a", e => e.map(a => a.getAttribute('href')));
         const inlineKeyboard = new InlineKeyboard();
         for (let i = 0; i < links.length; i++) {
             inlineKeyboard.text(subjects[i * 2]?.substring(0, subjects[i * 2]?.indexOf(',')) || '', links[i] || '').row();
