@@ -4,12 +4,12 @@ import { minimal_args } from '../config/puppeteer';
 import { authorization } from '../utils/authorization';
 
 export async function GetSubjects(ctx: CommandContext<Context>): Promise<void> {
-    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
+    const browser = await puppeteer.launch({ args: minimal_args });
     try {
         const page = await browser.newPage();
         await page.goto('https://ecampus.kpi.ua/');
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-        await authorization(ctx.from.id.toString(), page);
+        await authorization("1688738689", page);
         await page.goto("https://campus.kpi.ua/student/index.php?mode=studysheet");
         const selector = `.ListBox tr[data-year="${process.env.DATAYEAR}"][data-sem="${process.env.DATASEM}"] td`;
         const subjects = await page.$$eval(selector, e => e.map(subject => subject.textContent));

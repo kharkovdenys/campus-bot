@@ -4,7 +4,7 @@ import { ContextQuery } from '../interfaces';
 import { authorization } from '../utils/authorization';
 
 export async function getGrades(ctx: ContextQuery): Promise<void> {
-    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
+    const browser = await puppeteer.launch({ args: minimal_args });
     try {
         const page = await browser.newPage();
         if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }

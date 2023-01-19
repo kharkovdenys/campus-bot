@@ -7,7 +7,7 @@ import { authorization } from "../utils/authorization";
 import sha256 from "../utils/sha256";
 
 export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): Promise<void> {
-    const browser = await puppeteer.launch({ args: minimal_args, userDataDir: './data' });
+    const browser = await puppeteer.launch({ args: minimal_args });
     try {
         const update: Hash[] = [], insert: Hash[] = [];
         const page = await browser.newPage();
