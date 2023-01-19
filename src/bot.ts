@@ -6,7 +6,7 @@ import { checkHesh, getGrades, getSession, GetSubjects, login, logout, subscribe
 
 const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
-bot.command("start", (ctx) => ctx.reply(`Привіт, ${ctx.from?.username}!\n
+bot.command("start", (ctx) => ctx.reply(`Привіт, ${ctx.from?.first_name}!\n
 Цей бот переглядає та стежить за оновленням оцінок на сайті campus.kpi.ua\n
 Для початку треба зайти до акаунту, для цього треба ввести команду /login [Username] [Password]`));
 
