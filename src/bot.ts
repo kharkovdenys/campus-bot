@@ -27,8 +27,7 @@ if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(express.json());
   app.get('/schedule', async (req, res) => {
-    if (req.get("x-cyclic") === "cron")
-      await check(bot.api);
+    await check(bot.api);
     res.sendStatus(200);
   });
   app.use(webhookCallback(bot, "express", { onTimeout: () => console.log("timeout"), timeoutMilliseconds: 45000 }));
