@@ -1,6 +1,5 @@
 import { Bot, webhookCallback } from "grammy";
 import express from "express";
-import startdb from "./services/db";
 import { getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
 import check from "./services/schedule";
 
@@ -32,12 +31,11 @@ if (process.env.NODE_ENV === "production") {
       await check(bot.api);
     res.sendStatus(200);
   });
-  app.use(webhookCallback(bot, "express"));
+  app.use(webhookCallback(bot, "express", { onTimeout: () => console.log("timeout"), timeoutMilliseconds: 45000 }));
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, async () => {
-    await startdb();
+  app.listen(PORT, () => {
     console.log(`Bot listening on port ${PORT}`);
   });
 } else {
-  startdb().then(() => bot.start());
+  bot.start();
 }
