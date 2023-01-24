@@ -1,5 +1,5 @@
 import { CommandContext, Context } from "grammy";
-import { addUser, deleteUser } from "../services/db";
+import { addUser, deleteAllHash, deleteUser } from "../services/db";
 import axios from 'axios';
 
 export async function login(ctx: CommandContext<Context>): Promise<void> {
@@ -8,6 +8,7 @@ export async function login(ctx: CommandContext<Context>): Promise<void> {
         await ctx.deleteMessage();
         if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
         if (arg.length !== 2) throw new Error("Неправильний формат запису");
+        await deleteAllHash(ctx.from.id.toString());
         await deleteUser(ctx.from.id.toString());
         const details: { [key: string]: string } = {
             'username': arg[0],
