@@ -6,10 +6,10 @@ export async function logout(ctx: CommandContext<Context>): Promise<void> {
         if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
         await deleteAllHash(ctx.from.id.toString());
         await deleteUser(ctx.from.id.toString());
-        ctx.reply("Вихід відбувся успішно");
+        await ctx.reply("Вихід відбувся успішно");
     } catch (e) {
         let message = 'Сталася невідома помилка';
         if (e instanceof Error) message = e.message;
-        ctx.reply(message);
+        await ctx.reply(message);
     }
 }

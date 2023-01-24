@@ -15,10 +15,10 @@ export async function GetSubjects(ctx: CommandContext<Context>): Promise<void> {
         for (let i = 0; i < links.length; i++) {
             inlineKeyboard.text(subjects[i * 2]?.substring(0, subjects[i * 2]?.indexOf(',')) || '', links[i] || '').row();
         }
-        ctx.reply("Твої предмети у цьому семестрі:", { reply_markup: inlineKeyboard });
+        await ctx.reply("Твої предмети у цьому семестрі:", { reply_markup: inlineKeyboard });
     } catch (e) {
         let message = 'Сталася невідома помилка';
         if (e instanceof Error) message = e.message;
-        ctx.reply(message);
+        await ctx.reply(message);
     }
 }

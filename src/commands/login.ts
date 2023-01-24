@@ -39,10 +39,10 @@ export async function login(ctx: CommandContext<Context>): Promise<void> {
         const token = data.headers['set-cookie']?.[1]?.match(/token=([^;]*);/)?.[1];
         if (!token || !SID) throw new Error('Сайт повертає порожні дані');
         await addUser(ctx.from.id.toString(), token, SID);
-        ctx.reply("Автентифікація пройшла успішно");
+        await ctx.reply("Автентифікація пройшла успішно");
     } catch (e) {
         let message = 'Сталася невідома помилка';
         if (e instanceof Error) message = e.message;
-        ctx.reply(message);
+        await ctx.reply(message);
     }
 }

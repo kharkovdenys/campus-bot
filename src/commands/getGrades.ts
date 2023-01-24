@@ -15,10 +15,10 @@ export async function getGrades(ctx: CallbackQueryContext<Context>): Promise<voi
             answer += grades[i * 5] + ' ' + (grades[i * 5 + 1] || '❌') + ' ' + grades[i * 5 + 2] + '\n';
         }
         answer += data.querySelector('#tabs-0 p')?.text;
-        ctx.reply(answer);
+        await ctx.reply(answer);
     } catch (e) {
         let message = 'Сталася невідома помилка';
         if (e instanceof Error) message = e.message;
-        ctx.reply(message);
+        await ctx.reply(message);
     }
 }

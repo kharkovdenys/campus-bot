@@ -9,10 +9,10 @@ export async function subscribe(ctx: CommandContext<Context>): Promise<void> {
         await deleteAllHash(ctx.from.id.toString());
         const user = await getUser(ctx.from.id.toString());
         await checkHesh(user, []);
-        ctx.reply("Ви успішно підписалися");
+        await ctx.reply("Ви успішно підписалися");
     } catch (e) {
         let message = 'Сталася невідома помилка';
         if (e instanceof Error) message = e.message;
-        ctx.reply(message);
+        await ctx.reply(message);
     }
 }
