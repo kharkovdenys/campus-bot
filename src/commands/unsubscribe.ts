@@ -1,10 +1,15 @@
 import { CommandContext, Context } from "grammy";
-import { updateDistribution } from "../services/db";
+import { deleteAllHash, updateDistribution } from "../services/db";
 
 export async function unsubscribe(ctx: CommandContext<Context>): Promise<void> {
-    if (!ctx.from) { ctx.reply("Сталася якась помилка"); return; }
-    if (await updateDistribution(ctx.from.id.toString(), false))
+    try {
+        if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
+        await updateDistribution(ctx.from.id.toString(), false);
+        await deleteAllHash(ctx.from.id.toString());
         ctx.reply("Ви успішно відписалися");
-    else
-        ctx.reply("Сталася якась помилка");
+    } catch (e) {
+        let message = 'Сталася невідома помилка';
+        if (e instanceof Error) message = e.message;
+        ctx.reply(message);
+    }
 }

@@ -1,8 +1,9 @@
 import { Bot, webhookCallback } from "grammy";
 import express from "express";
 import schedule from "node-schedule";
-import startdb, { getDistribution, getHash } from "./services/db";
-import { checkHesh, getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
+import startdb from "./services/db";
+import { getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
+import check from "./services/schedule";
 
 const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
@@ -24,20 +25,7 @@ bot.command("unsubscribe", unsubscribe);
 
 bot.callbackQuery(/student(.*)/, getGrades);
 
-schedule.scheduleJob('59 * * * *', async function () {
-  if (process.env.SKIP === "true") return;
-  try {
-    const users = await getDistribution();
-    if (!users) { console.log("Сталася якась помилка"); return; }
-    for (let i = 0; i < users.length; i++) {
-      const hashes = await getHash(users[i].userId);
-      if (hashes)
-        await checkHesh(users[i], hashes, bot.api);
-    }
-  } catch {
-    console.log('validation error');
-  }
-});
+schedule.scheduleJob('59 * * * *', () => check(bot.api));
 
 if (process.env.NODE_ENV === "production") {
   const app = express();
