@@ -4,7 +4,6 @@ import { User } from "../interfaces";
 import { getDistribution, getHash } from "./db";
 
 export default async function check(api: Api<RawApi>): Promise<void> {
-    if (process.env.SKIP === "true") return;
     const users: User[] = await getDistribution().catch(() => []);
     for (let i = 0; i < users.length; i++) {
         try {

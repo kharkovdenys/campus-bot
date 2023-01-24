@@ -5,7 +5,6 @@ declare global {
       NODE_ENV?: "development" | "production";
       PORT?: number;
       CONNECTION_STRING: string;
-      SKIP: string;
       DATAYEAR: string;
       DATASEM: string;
     }

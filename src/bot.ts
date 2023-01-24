@@ -1,6 +1,5 @@
 import { Bot, webhookCallback } from "grammy";
 import express from "express";
-import schedule from "node-schedule";
 import startdb from "./services/db";
 import { getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
 import check from "./services/schedule";
@@ -25,11 +24,14 @@ bot.command("unsubscribe", unsubscribe);
 
 bot.callbackQuery(/student(.*)/, getGrades);
 
-schedule.scheduleJob('59 * * * *', () => check(bot.api));
-
 if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(express.json());
+  app.get('/schedule', async (req, res) => {
+    if (req.get("x-cyclic") === "cron")
+      await check(bot.api);
+    res.sendStatus(200);
+  });
   app.use(webhookCallback(bot, "express", { onTimeout: () => console.log("timeout"), timeoutMilliseconds: 45000 }));
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, async () => {
