@@ -1,4 +1,5 @@
 import { User } from "../interfaces";
+import fetch from "node-fetch";
 
 export async function getPHPSESSID(user: User): Promise<string> {
     if (!user) throw new Error('Ви не автентифіковані');
