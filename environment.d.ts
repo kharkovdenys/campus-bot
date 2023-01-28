@@ -7,6 +7,7 @@ declare global {
       CONNECTION_STRING: string;
       DATAYEAR: string;
       DATASEM: string;
+      CRON_CODE: string;
     }
   }
 }

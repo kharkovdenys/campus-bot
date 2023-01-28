@@ -27,8 +27,12 @@ if (process.env.NODE_ENV === "production") {
   const app = express();
   app.use(express.json());
   app.get('/schedule', async (req, res) => {
-    await check(bot.api);
-    res.sendStatus(200);
+    if (req.get("cron") === process.env.CRON_CODE) {
+      await check(bot.api);
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(403);
+    }
   });
   app.use(webhookCallback(bot, "express", { onTimeout: () => console.log("timeout"), timeoutMilliseconds: 45000 }));
   const PORT = process.env.PORT || 3000;
