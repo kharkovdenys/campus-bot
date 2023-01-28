@@ -1,23 +1,18 @@
 import { Api, RawApi } from "grammy";
 import { Hash, User } from "../interfaces";
-import { insertHash, updateHash } from "../services/db";
+import { updateHash } from "../services/db";
 import { getPage, getPHPSESSID, sha256 } from "../utils";
 
 export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): Promise<void> {
     try {
-        const update: Hash[] = [], insert: Hash[] = [];
+        const update: Hash[] = [];
         const PHPSESSID = await getPHPSESSID(user);
         let data = await getPage("https://campus.kpi.ua/student/index.php?mode=vedomoststud", user.token, PHPSESSID);
         const value = data.querySelector('.cntnt table')?.structuredText || '';
         const hash256 = sha256(value);
         const current = hashes.filter((h) => h.subjectId === '-1');
-        if (current.length) {
-            if (current[0].hash256 !== hash256) {
-                update.push({ subjectId: '-1', hash256 });
-                await bot?.sendMessage(user.userId, value);
-            }
-        } else {
-            insert.push({ subjectId: '-1', hash256 });
+        if (!current.length || current[0].hash256 !== hash256) {
+            update.push({ subjectId: '-1', hash256 });
             await bot?.sendMessage(user.userId, value);
         }
         data = await getPage("https://campus.kpi.ua/student/index.php?mode=studysheet", user.token, PHPSESSID);
@@ -36,19 +31,13 @@ export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): 
             const subjectId = link?.match(/id=([0-9]*)/)?.[1];
             if (subjectId) {
                 const current = hashes.filter((h) => h.subjectId === subjectId);
-                if (current.length) {
-                    if (current[0].hash256 !== hash256) {
-                        update.push({ subjectId, hash256 });
-                        await bot?.sendMessage(user.userId, answer);
-                    }
-                } else {
-                    insert.push({ subjectId, hash256 });
+                if (!current.length || current[0].hash256 !== hash256) {
+                    update.push({ subjectId, hash256 });
                     await bot?.sendMessage(user.userId, answer);
                 }
             }
         }
         if (update.length) await updateHash(user.userId, update);
-        if (insert.length) await insertHash(user.userId, insert);
     } catch {
         throw new Error('Не вдалося перевірити хеш');
     }

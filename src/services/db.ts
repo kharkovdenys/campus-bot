@@ -3,7 +3,7 @@ import { Hash, User } from '../interfaces';
 
 export async function getUser(userId: string): Promise<User> {
     await sql.connect(process.env.CONNECTION_STRING || '');
-    const result = await sql.query`select * from token where userId = ${userId}`;
+    const result = await sql.query`SELECT * FROM token WHERE userId = ${userId}`;
     return result.recordset[0];
 }
 
@@ -37,14 +37,6 @@ export async function getHash(userId: string): Promise<Hash[]> {
 export async function deleteAllHash(userId: string): Promise<void> {
     await sql.connect(process.env.CONNECTION_STRING || '');
     await sql.query`DELETE FROM Hash WHERE userId=${userId}`;
-}
-
-export async function insertHash(userId: string, hashes: Hash[]): Promise<void> {
-    await sql.connect(process.env.CONNECTION_STRING || '');
-    let command = '';
-    hashes.map((hash) => command += `(${userId},'${hash.subjectId}','${hash.hash256}'),\n`);
-    command = `INSERT INTO Hash Values${command.slice(0, -2)}`;
-    await sql.query(command);
 }
 
 export async function updateHash(userId: string, hashes: Hash[]): Promise<void> {
