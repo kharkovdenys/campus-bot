@@ -13,7 +13,7 @@ export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): 
         const current = hashes.filter((h) => h.subjectId === '-1');
         if (!current.length || current[0].hash256 !== hash256) {
             update.push({ subjectId: '-1', hash256 });
-            await bot?.sendMessage(user.userId, value);
+            if (value !== '') await bot?.sendMessage(user.userId, value);
         }
         data = await getPage("https://campus.kpi.ua/student/index.php?mode=studysheet", user.token, PHPSESSID);
         const selector = `.ListBox tr[data-year="${process.env.DATAYEAR}"][data-sem="${process.env.DATASEM}"] td a`;
@@ -33,7 +33,7 @@ export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): 
                 const current = hashes.filter((h) => h.subjectId === subjectId);
                 if (!current.length || current[0].hash256 !== hash256) {
                     update.push({ subjectId, hash256 });
-                    await bot?.sendMessage(user.userId, answer);
+                    if (value !== '') await bot?.sendMessage(user.userId, answer);
                 }
             }
         }
