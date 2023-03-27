@@ -1,17 +1,22 @@
+import axios from "axios";
 import { Api, RawApi } from "grammy";
 import { checkHesh } from "../commands";
 import { User } from "../interfaces";
 import { getDistribution, getHash } from "./db";
 
-export default async function check(api: Api<RawApi>): Promise<void> {
+export async function check(api: Api<RawApi>, user: User): Promise<void> {
+    try {
+        const hashes = await getHash(user.userId);
+        if (hashes) await checkHesh(user, hashes, api);
+    }
+    catch {
+        console.log('Validation error userId:', user.userId);
+    }
+}
+
+export async function sendRequests(): Promise<void> {
     const users: User[] = await getDistribution().catch(() => { console.log('Error getting users'); return []; });
     for (let i = 0; i < users.length; i++) {
-        try {
-            const hashes = await getHash(users[i].userId);
-            if (hashes) await checkHesh(users[i], hashes, api);
-        }
-        catch {
-            console.log('Validation error userId:', users[i].userId);
-        }
+        axios.post(process.env.URL + "/check", users[i], { headers: { 'cron': process.env.CRON_CODE } });
     }
 }

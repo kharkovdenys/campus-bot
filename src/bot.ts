@@ -1,7 +1,7 @@
 import { Bot, webhookCallback } from "grammy";
 import express from "express";
 import { getGrades, getSession, GetSubjects, login, logout, subscribe, unsubscribe } from "./commands";
-import check from "./services/schedule";
+import { check, sendRequests } from "./services/schedule";
 
 const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 
@@ -28,7 +28,15 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.json());
   app.get('/schedule', async (req, res) => {
     if (req.get("cron") === process.env.CRON_CODE) {
-      await check(bot.api);
+      await sendRequests();
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(403);
+    }
+  });
+  app.post('/check', async (req, res) => {
+    if (req.get("cron") === process.env.CRON_CODE) {
+      await check(bot.api, req.body);
       res.sendStatus(200);
     } else {
       res.sendStatus(403);

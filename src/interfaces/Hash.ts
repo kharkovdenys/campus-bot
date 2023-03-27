@@ -1,4 +1,4 @@
 export interface Hash {
-    subjectId: string,
-    hash256: string
+    subjectId: string;
+    hash256: string;
 }

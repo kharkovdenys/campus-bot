@@ -8,6 +8,7 @@ declare global {
       DATAYEAR: string;
       DATASEM: string;
       CRON_CODE: string;
+      URL: string;
     }
   }
 }
