@@ -8,15 +8,19 @@ export async function check(api: Api<RawApi>, user: User): Promise<void> {
     try {
         const hashes = await getHash(user.userId);
         if (hashes) await checkHesh(user, hashes, api);
-    }
-    catch {
-        console.log('Validation error userId:', user.userId);
+    } catch {
+        console.log("Validation error userId:", user.userId);
     }
 }
 
 export async function sendRequests(): Promise<void> {
-    const users: User[] = await getDistribution().catch(() => { console.log('Error getting users'); return []; });
-    for (let i = 0; i < users.length; i++) {
-        axios.post(process.env.URL + "/check", users[i], { headers: { 'cron': process.env.CRON_CODE } });
+    const users: User[] = await getDistribution().catch(() => {
+        console.log("Error getting users");
+        return [];
+    });
+    for (const user of users) {
+        axios.post(process.env.URL + "/check", user, {
+            headers: { cron: process.env.CRON_CODE },
+        }).catch((error) => console.log("Error sending request", error));
     }
 }

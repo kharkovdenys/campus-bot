@@ -1,6 +1,6 @@
 import axios from "axios";
 import iconv from 'iconv-lite';
-import { parse, HTMLElement } from 'node-html-parser';
+import { HTMLElement, parse } from 'node-html-parser';
 
 export async function getPage(url: string, token: string, PHPSESSID: string): Promise<HTMLElement> {
     return await axios(url, {

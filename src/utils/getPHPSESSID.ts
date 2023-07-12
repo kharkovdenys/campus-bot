@@ -1,5 +1,5 @@
-import { User } from "../interfaces";
 import axios from "axios";
+import { User } from "../interfaces";
 
 export async function getPHPSESSID(user: User): Promise<string> {
     if (!user) throw new Error('Ви не автентифіковані');
