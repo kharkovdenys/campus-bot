@@ -1,15 +1,15 @@
 import { CommandContext, Context } from "grammy";
 import { deleteAllHash, deleteUser } from "../services/db";
+import { getUserId } from "../utils";
 
 export async function logout(ctx: CommandContext<Context>): Promise<void> {
     try {
-        if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
-        await deleteAllHash(ctx.from.id.toString());
-        await deleteUser(ctx.from.id.toString());
+        const userId = getUserId(ctx);
+        await deleteAllHash(userId);
+        await deleteUser(userId);
         await ctx.reply("Вихід відбувся успішно");
-    } catch (e) {
-        let message = 'Сталася невідома помилка';
-        if (e instanceof Error) message = e.message;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Сталася невідома помилка";
         await ctx.reply(message);
     }
 }

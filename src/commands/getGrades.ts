@@ -1,11 +1,11 @@
 import { CallbackQueryContext, Context } from 'grammy';
 import { getUser } from '../services/db';
-import { getPHPSESSID, getPage } from '../utils';
+import { getPHPSESSID, getPage, getUserId } from '../utils';
 
 export async function getGrades(ctx: CallbackQueryContext<Context>): Promise<void> {
     try {
-        if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
-        const user = await getUser(ctx.from.id.toString());
+        const userId = getUserId(ctx);
+        const user = await getUser(userId);
         const PHPSESSID = await getPHPSESSID(user);
         const data = await getPage("https://campus.kpi.ua" + ctx.callbackQuery.data, user.token, PHPSESSID);
         const grades = data.querySelectorAll(`#tabs-0 table td`).map(grade => grade.text);
@@ -16,9 +16,8 @@ export async function getGrades(ctx: CallbackQueryContext<Context>): Promise<voi
         }
         answer += data.querySelector('#tabs-0 p')?.text;
         await ctx.reply(answer);
-    } catch (e) {
-        let message = 'Сталася невідома помилка';
-        if (e instanceof Error) message = e.message;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Сталася невідома помилка";
         await ctx.reply(message);
     }
 }

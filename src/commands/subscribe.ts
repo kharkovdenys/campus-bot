@@ -1,18 +1,19 @@
 import { CommandContext, Context } from "grammy";
 import { deleteAllHash, getUser, updateDistribution } from "../services/db";
+import { getUserId } from "../utils";
 import { checkHesh } from "./checkHesh";
 
 export async function subscribe(ctx: CommandContext<Context>): Promise<void> {
     try {
-        if (!ctx.from) throw new Error("Не вдалося отримати ваш ідентифікатор із Telegram");
-        await updateDistribution(ctx.from.id.toString(), true);
-        await deleteAllHash(ctx.from.id.toString());
-        const user = await getUser(ctx.from.id.toString());
-        await checkHesh(user, []);
+        const userId = getUserId(ctx);
+        const fetchedUser = await getUser(userId);
+        if (!fetchedUser) throw new Error("Не вдалося отримати дані користувача");
+        await updateDistribution(userId, true);
+        await deleteAllHash(userId);
+        await checkHesh(fetchedUser, []);
         await ctx.reply("Ви успішно підписалися");
-    } catch (e) {
-        let message = 'Сталася невідома помилка';
-        if (e instanceof Error) message = e.message;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Сталася невідома помилка";
         await ctx.reply(message);
     }
 }

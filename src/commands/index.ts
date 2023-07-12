@@ -4,5 +4,6 @@ export * from './getSession';
 export * from './getSubjects';
 export * from './login';
 export * from './logout';
+export * from './start';
 export * from './subscribe';
 export * from './unsubscribe';

@@ -1,7 +1,7 @@
 import { Api, RawApi } from "grammy";
 import { Hash, User } from "../interfaces";
 import { updateHash } from "../services/db";
-import { getPage, getPHPSESSID, sha256 } from "../utils";
+import { getPHPSESSID, getPage, sha256 } from "../utils";
 
 export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): Promise<void> {
     try {
