@@ -1,4 +1,5 @@
 export * from './checkHesh';
+export * from './getAttestation';
 export * from './getGrades';
 export * from './getSession';
 export * from './getSubjects';

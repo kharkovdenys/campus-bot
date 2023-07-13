@@ -1,6 +1,6 @@
 import express from "express";
 import { Bot, webhookCallback } from "grammy";
-import { getGrades, getSession, getSubjects, login, logout, start, subscribe, unsubscribe } from "./commands";
+import { getGrades, getSession, getSubjects, login, logout, start, subscribe, unsubscribe, getAttestation } from "./commands";
 import { check, sendRequests } from "./services/schedule";
 
 const botToken = process.env.TELEGRAM_TOKEN;
@@ -15,6 +15,8 @@ bot.command("start", start);
 bot.command("session", getSession);
 
 bot.command("subjects", getSubjects);
+
+bot.command("attestation", getAttestation);
 
 bot.command("login", login);
 
