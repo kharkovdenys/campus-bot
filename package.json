@@ -1,6 +1,6 @@
 {
   "name": "campus-bot",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Viewing and subscribing to grade updates on campus.kpi.ua",
   "scripts": {
     "build": "tsc",
