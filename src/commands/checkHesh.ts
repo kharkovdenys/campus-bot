@@ -23,7 +23,7 @@ export async function checkHesh(user: User, hashes: Hash[], bot?: Api<RawApi>): 
         current = hashes.find((h) => h.subjectId === '-2');
         if (!current || (current && current.hash256 !== hash256)) {
             update.push({ subjectId: '-2', hash256 });
-            await bot?.sendMessage(user.userId, attestation);
+            await bot?.sendMessage(user.userId, attestation, { parse_mode: "HTML" });
         }
 
         page = await getPage("https://campus.kpi.ua/student/index.php?mode=studysheet", user.token, PHPSESSID);
