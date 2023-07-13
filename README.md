@@ -25,6 +25,7 @@ Viewing and subscribing to grade updates on campus.kpi.ua
 - /login - Login (Use /login [Username] [Password])
 - /logout - Exit
 - /subjects - Your subjects
+- /attestation - Your attestation
 - /session - Session results
 - /subscribe - Subscribe to updates
 - /unsubscribe - Unsubscribe from updates
