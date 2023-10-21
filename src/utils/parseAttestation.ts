@@ -11,10 +11,11 @@ export function parseAttestation(page: HTMLElement): string {
 
     const semester = parseInt(process.env.DATASEM as string);
     const columnIndex = 2 + 2 * (semester - 1);
+
     const attestation = rows.filter(row => {
         const grade1 = row[columnIndex];
         const grade2 = row[columnIndex + 1];
-        return grade1 !== '' && grade1 !== 'н/в' && grade2 !== '' && grade2 !== 'н/в';
+        return (grade1 !== '' && grade1 !== 'н/в') || (grade2 !== '' && grade2 !== 'н/в');
     });
 
     if (attestation.length === 0)
