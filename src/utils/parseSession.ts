@@ -1,21 +1,35 @@
 import { HTMLElement } from 'node-html-parser';
 
 export function parseSession(page: HTMLElement): string {
-    const tableText = page.querySelector('.cntnt table')?.structuredText;
+    const table = page.querySelector('.cntnt table');
 
-    if (!tableText) return 'Немає результатів сесії';
+    if (!table) return 'Немає результатів сесії';
+    const result: string[][] = [];
 
-    const tableArray = tableText.split('\n');
-    const header = tableArray.splice(0, 1);
+    table.querySelectorAll('tr').forEach((row) => {
+        const rowResult: string[] = [];
 
-    const COLUMN_COUNT = 8;
-    const rows = Array.from({ length: Math.ceil(tableArray.length / COLUMN_COUNT) }, (_, i) =>
-        tableArray.slice(i * COLUMN_COUNT, (i + 1) * COLUMN_COUNT)
-    );
+        row.querySelectorAll('td, th').forEach((cell) => {
+            const cellText = cell.text.trim();
+            const cellValue = cellText === '' ? '' : cellText;
 
-    if (!rows.length) return 'Немає результатів сесії';
-    const lastDate = new Date(rows[0][1]).getTime();
-    const lastSession = rows.filter(row => Math.ceil(Math.abs(lastDate - new Date(row[1]).getTime()) / (1000 * 60 * 60 * 24)) < 80);
+            rowResult.push(cellValue);
+        });
 
-    return header + '\n' + lastSession.join('\n');
+        result.push(rowResult);
+    });
+    if (!result.length) return 'Немає сесії';
+    const header = result.shift();
+    if (!header) return 'Немає заголовку таблиці';
+    if (!result.length) return 'Немає результатів сесії';
+    const lastDate = new Date(result[0][1]).getTime();
+    const lastSession = result.filter(row => Math.ceil(Math.abs(lastDate - new Date(row[1]).getTime()) / (1000 * 60 * 60 * 24)) < 80);
+
+    return header.join(' ') + '\n' + lastSession.map(e => {
+        if (e[5] === '')
+            e[5] = 'Не визначено';
+        if (e[6] === '')
+            e[6] = 'Не виставлено';
+        return e.join(', ');
+    }).join('\n');
 }
