@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { CommandContext, Context } from "grammy";
-import { addUser, deleteAllHash, deleteUser } from "../services/db";
-import { getUserId } from "../utils";
+import { CommandContext, Context } from 'grammy';
+
+import { addUser, deleteAllHash, deleteUser } from '../services/db';
+import { getUserId } from '../utils';
 
 export async function login(ctx: CommandContext<Context>): Promise<void> {
     try {

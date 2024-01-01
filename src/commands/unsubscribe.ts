@@ -1,6 +1,7 @@
-import { CommandContext, Context } from "grammy";
-import { deleteAllHash, updateDistribution } from "../services/db";
-import { getUserId } from "../utils";
+import { CommandContext, Context } from 'grammy';
+
+import { deleteAllHash, updateDistribution } from '../services/db';
+import { getUserId } from '../utils';
 
 export async function unsubscribe(ctx: CommandContext<Context>): Promise<void> {
     try {

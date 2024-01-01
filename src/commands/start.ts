@@ -1,4 +1,4 @@
-import { CommandContext, Context } from "grammy";
+import { CommandContext, Context } from 'grammy';
 
 export async function start(ctx: CommandContext<Context>): Promise<void> {
     const firstName = ctx.from?.first_name || "unknown";

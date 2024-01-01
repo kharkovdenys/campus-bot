@@ -1,8 +1,9 @@
-import axios from "axios";
-import { Api, RawApi } from "grammy";
-import { checkHesh } from "../commands";
-import { User } from "../interfaces";
-import { getDistribution, getHash } from "./db";
+import axios from 'axios';
+import { Api, RawApi } from 'grammy';
+
+import { checkHesh } from '../commands';
+import { User } from '../interfaces';
+import { getDistribution, getHash } from './db';
 
 export async function check(api: Api<RawApi>, user: User): Promise<void> {
     try {

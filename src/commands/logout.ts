@@ -1,6 +1,7 @@
-import { CommandContext, Context } from "grammy";
-import { deleteAllHash, deleteUser } from "../services/db";
-import { getUserId } from "../utils";
+import { CommandContext, Context } from 'grammy';
+
+import { deleteAllHash, deleteUser } from '../services/db';
+import { getUserId } from '../utils';
 
 export async function logout(ctx: CommandContext<Context>): Promise<void> {
     try {

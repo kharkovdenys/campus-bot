@@ -1,6 +1,7 @@
 import { CallbackQueryContext, Context } from 'grammy';
+
 import { getUser } from '../services/db';
-import { getPHPSESSID, getPage, getUserId, parseGrades } from '../utils';
+import { getPage, getPHPSESSID, getUserId, parseGrades } from '../utils';
 
 export async function getGrades(ctx: CallbackQueryContext<Context>): Promise<void> {
     try {

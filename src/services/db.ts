@@ -1,4 +1,5 @@
 import sql, { ConnectionPool } from 'mssql';
+
 import { Hash, User } from '../interfaces';
 
 let connectionPool: ConnectionPool | undefined;

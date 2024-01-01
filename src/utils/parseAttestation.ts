@@ -2,6 +2,9 @@ import { HTMLElement } from 'node-html-parser';
 
 export function parseAttestation(page: HTMLElement): string {
     const table = page.getElementById('StudyCourseData');
+
+    if (!table) return 'Немає атестаційної таблиці';
+
     const tableData = table.querySelectorAll('tbody td').map(td => td.text);
 
     const COLUMN_COUNT = 6;
@@ -17,9 +20,6 @@ export function parseAttestation(page: HTMLElement): string {
         const grade2 = row[columnIndex + 1];
         return (grade1 !== '' && grade1 !== 'н/в') || (grade2 !== '' && grade2 !== 'н/в');
     });
-
-    if (attestation.length === 0)
-        return 'Немає результатів календарного контролю';
 
     return "Результати календарного контролю:\n" + attestation.map(a => a[0] + '   <b>' + (a[columnIndex] || '❌') + "  " + (a[columnIndex + 1] || '❌') + '</b>').join("\n");
 }

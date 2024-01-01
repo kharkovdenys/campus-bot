@@ -1,7 +1,8 @@
-import { CommandContext, Context } from "grammy";
-import { deleteAllHash, getUser, updateDistribution } from "../services/db";
-import { getUserId } from "../utils";
-import { checkHesh } from "./checkHesh";
+import { CommandContext, Context } from 'grammy';
+
+import { deleteAllHash, getUser, updateDistribution } from '../services/db';
+import { getUserId } from '../utils';
+import { checkHesh } from './checkHesh';
 
 export async function subscribe(ctx: CommandContext<Context>): Promise<void> {
     try {

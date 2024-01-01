@@ -1,6 +1,7 @@
 import { CommandContext, Context } from 'grammy';
+
 import { getUser } from '../services/db';
-import { getPHPSESSID, getPage, getUserId, parseSession } from '../utils';
+import { getPage, getPHPSESSID, getUserId, parseSession } from '../utils';
 
 export async function getSession(ctx: CommandContext<Context>): Promise<void> {
     try {

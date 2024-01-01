@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import iconv from 'iconv-lite';
 import { HTMLElement, parse } from 'node-html-parser';
 
