@@ -1,4 +1,3 @@
-import csrf from 'csurf';
 import express from 'express';
 import { Bot, webhookCallback } from 'grammy';
 import helmet from 'helmet';
@@ -40,7 +39,6 @@ else {
   const app = express();
 
   app.use(express.json());
-  app.use(csrf());
   app.use(helmet());
 
   app.get("/schedule", async (req, res) => {
