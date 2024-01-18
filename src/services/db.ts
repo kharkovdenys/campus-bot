@@ -54,7 +54,7 @@ export async function updateHash(userId: string, hashes: Hash[]): Promise<void> 
     let command = `DELETE FROM Hash WHERE userId='${userId}' AND subjectId IN (${hashes.map((hash) => `'${hash.subjectId}'`).join(",")})`;
     await connection.query(command);
     command = '';
-    hashes.map((hash) => command += `(${userId},'${hash.subjectId}','${hash.hash256}'),\n`);
+    hashes.forEach((hash) => command += `(${userId},'${hash.subjectId}','${hash.hash256}'),\n`);
     command = `INSERT INTO Hash Values${command.slice(0, -2)}`;
     await connection.query(command);
 }

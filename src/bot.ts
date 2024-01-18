@@ -1,5 +1,7 @@
+import csrf from 'csurf';
 import express from 'express';
 import { Bot, webhookCallback } from 'grammy';
+import helmet from 'helmet';
 
 import {
   getAttestation, getGrades, getSession, getSubjects, login, logout, start, subscribe, unsubscribe
@@ -38,6 +40,8 @@ else {
   const app = express();
 
   app.use(express.json());
+  app.use(csrf());
+  app.use(helmet());
 
   app.get("/schedule", async (req, res) => {
     if (req.get("cron") === process.env.CRON_CODE) {

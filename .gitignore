@@ -1,3 +1,4 @@
 dist
 .env
+.dccache
 node_modules
