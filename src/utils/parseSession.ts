@@ -21,6 +21,7 @@ export function parseSession(page: HTMLElement): string {
     if (!result.length) return 'Немає сесії';
     const header = result.shift();
     if (!header) return 'Немає заголовку таблиці';
+    result.shift();
     if (!result.length) return 'Немає результатів сесії';
     const lastDate = new Date(result[0][1]).getTime();
     const lastSession = result.filter(row => Math.ceil(Math.abs(lastDate - new Date(row[1]).getTime()) / (1000 * 60 * 60 * 24)) < 80);
