@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Api, RawApi } from 'grammy';
 
 import { checkHesh } from '../commands';
@@ -15,13 +14,31 @@ export async function check(api: Api<RawApi>, user: User): Promise<void> {
 }
 
 export async function sendRequests(): Promise<void> {
-    const users: User[] = await getDistribution().catch(() => {
-        console.log("Error getting users");
-        return [];
-    });
-    for (const user of users) {
-        axios.post(process.env.URL + "/check", user, {
-            headers: { cron: process.env.CRON_CODE },
-        }).catch((error) => console.log("Error sending request", error));
+    try {
+        const users: User[] = await getDistribution().catch(() => {
+            console.log("Error getting users");
+            return [];
+        });
+
+        for (const user of users) {
+            try {
+                const response = await fetch(`${process.env.URL}/check`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'cron': process.env.CRON_CODE || '',
+                    },
+                    body: JSON.stringify(user),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to send request: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.log("Error sending request", error);
+            }
+        }
+    } catch (error) {
+        console.log("Error processing requests", error);
     }
 }

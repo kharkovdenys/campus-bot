@@ -34,7 +34,6 @@ Viewing and subscribing to grade updates on campus.kpi.ua
 
 - [Express](https://expressjs.com/)
 - [Grammy](https://grammy.dev/)
-- [Axios](https://axios-http.com/)
 - [Fast HTML Parser](https://www.npmjs.com/package/node-html-parser)
 - [node-mssql](https://www.npmjs.com/package/mssql)
 - [iconv-lite](https://www.npmjs.com/package/iconv-lite)
