@@ -1,6 +1,6 @@
 {
   "name": "campus-bot",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Viewing and subscribing to grade updates on campus.kpi.ua",
   "scripts": {
     "build": "tsc",
@@ -24,7 +24,7 @@
     "@types/node": "^22.5.4",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "env-cmd": "^10.1.0",
-    "eslint": "^9.9.1",
+    "eslint": "^9.10.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.4"
   }

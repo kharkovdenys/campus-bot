@@ -35,7 +35,7 @@ export async function deleteUser(userId: number): Promise<void> {
 
 export async function updateDistribution(userId: number, distribution: boolean): Promise<void> {
     const db = await getDb();
-    const collection: Collection<User> = db.collection('Token');
+    const collection: Collection<User> = db.collection('token');
     await collection.updateOne({ userId }, { $set: { distribution } });
 }
 
