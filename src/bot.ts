@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import { Bot, webhookCallback } from 'grammy';
 import helmet from 'helmet';
 
@@ -63,7 +63,7 @@ else {
     webhookCallback(bot, "express", {
       onTimeout: () => console.log("timeout"),
       timeoutMilliseconds: 30000,
-    })
+    }) as unknown as RequestHandler
   );
 
   const PORT = process.env.PORT || 3000;

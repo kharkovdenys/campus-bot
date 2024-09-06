@@ -1,5 +1,6 @@
 export interface User {
-    userId: string;
+    userId: number;
     token: string;
     SID: string;
+    distribution: boolean;
 }
